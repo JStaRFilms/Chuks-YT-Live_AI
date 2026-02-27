@@ -22,7 +22,7 @@ MAX_QUEUE_SIZE = 5
 is_playing_audio: bool = False
 
 # Wake word configuration
-WAKE_WORDS = ["hey chuks", "yo chuks", "chuks"]
+WAKE_WORDS = ["hey chuks", "yo chuks", "chuks", "yo", "hey"]
 
 def load_persona() -> str:
     """Load the persona configuration and build the system prompt."""
