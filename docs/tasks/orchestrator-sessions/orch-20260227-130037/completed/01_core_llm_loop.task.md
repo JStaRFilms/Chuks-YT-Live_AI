@@ -95,12 +95,12 @@
 
 ## ✅ Success Criteria
 
-- [ ] Server starts without errors
-- [ ] POST `/chat` returns personality-appropriate response from Chuks
-- [ ] Multiple messages maintain conversation context
-- [ ] Response is under 40 words
-- [ ] No hardcoded API keys (all from `.env`)
-- [ ] Code follows `docs/Coding_Guidelines.md`
+- [x] Server starts without errors
+- [x] POST `/chat` returns personality-appropriate response from Chuks
+- [x] Multiple messages maintain conversation context
+- [x] Response is under 40 words
+- [x] No hardcoded API keys (all from `.env`)
+- [x] Code follows `docs/Coding_Guidelines.md`
 
 ---
 

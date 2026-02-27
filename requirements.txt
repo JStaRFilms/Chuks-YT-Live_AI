@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+groq
+python-dotenv
+httpx
+sounddevice
+numpy
+scipy
