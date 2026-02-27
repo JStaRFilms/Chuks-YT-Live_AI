@@ -1,0 +1,243 @@
+PS C:\CreativeOS\01_Projects\Code\Personal_Stuff\2026-02-27_Chuks-YT-Live_AI> python -m uvicorn src.main:app --host 0.0.0.0 --port 8000
+INFO:     Started server process [42560]
+INFO:     Waiting for application startup.
+2026-02-27 15:20:46,257 [INFO] src.main: Starting up Chuks AI Stream Companion...
+2026-02-27 15:20:46,258 [INFO] src.main: Loaded persona. System prompt preview: Your name is Chuks. Personality: Witty, curious, speaks casually. Loves tech and gaming. Speaking St...
+2026-02-27 15:20:46,258 [INFO] src.stt: Starting mic listener on device 1...
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     ('127.0.0.1', 59187) - "WebSocket /ws/avatar" [accepted]
+2026-02-27 15:20:46,615 [INFO] src.ws: Avatar WebSocket client connected
+INFO:     connection open
+INFO:     ('127.0.0.1', 54792) - "WebSocket /ws/avatar" [accepted]
+2026-02-27 15:20:46,618 [INFO] src.ws: Avatar WebSocket client connected
+INFO:     connection open
+2026-02-27 15:20:47,801 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:20:51,402 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:20:51,827 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:20:53,209 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:20:53,211 [INFO] src.stt: Transcript: This guy Larry, this shit is actually working.
+2026-02-27 15:20:53,212 [INFO] src.orchestrator: 🎙️ Heard: This guy Larry, this shit is actually working. 
+2026-02-27 15:20:53,212 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:20:53,427 [INFO] src.orchestrator: 🚀 Processing queued transcript: This guy Larry, this shit is actually working. (Queue size: 0/2)
+2026-02-27 15:20:54,594 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:20:55,117 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:20:58,701 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:21:00,024 [INFO] src.tts: Generated TTS for text (75 chars) -> 216780 bytes
+2026-02-27 15:21:00,028 [INFO] src.audio: Playing audio on device 5 (216780 bytes)
+2026-02-27 15:21:00,031 [ERROR] src.audio: Failed to play audio on device 5: Error opening OutputStream: Invalid number of channels [PaErrorCode -9998]
+2026-02-27 15:21:05,802 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:21:06,234 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:21:07,511 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:21:07,512 [INFO] src.stt: Transcript: Yeah, this is actually working. It's crazy. This is actually working. Let's look up. Let's see.
+2026-02-27 15:21:07,512 [INFO] src.orchestrator: 🎙️ Heard: Yeah, this is actually working. It's crazy. Thiis is actually working. Let's look up. Let's see.
+2026-02-27 15:21:07,514 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:21:15,040 [INFO] src.orchestrator: 🚀 Processing queued transcript: Yeah, this is actually working. It's crazy. This is actually working. Let's look up. Let's see. (Queue size: 0/2)
+2026-02-27 15:21:16,221 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:21:16,605 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:21:19,568 [INFO] src.tts: Generated TTS for text (43 chars) -> 134670 bytes
+2026-02-27 15:21:19,570 [INFO] src.audio: Playing audio on device 5 (134670 bytes)
+2026-02-27 15:21:19,572 [ERROR] src.audio: Failed to play audio on device 5: Error opening OutputStream: Invalid number of channels [PaErrorCode -9998]
+2026-02-27 15:21:25,002 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:21:26,704 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:21:27,144 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:21:28,171 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:21:28,173 [INFO] src.stt: Transcript: All right.
+2026-02-27 15:21:28,174 [INFO] src.orchestrator: 🎙️ Heard: All right.
+2026-02-27 15:21:28,174 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:21:34,574 [INFO] src.orchestrator: 🚀 Processing queued transcript: All right. (Queue size: 0/2)
+2026-02-27 15:21:35,771 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:21:36,224 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:21:39,365 [INFO] src.tts: Generated TTS for text (44 chars) -> 112702 bytes
+2026-02-27 15:21:39,367 [INFO] src.audio: Playing audio on device 5 (112702 bytes)
+2026-02-27 15:21:39,368 [ERROR] src.audio: Failed to play audio on device 5: Error opening OutputStream: Invalid number of channels [PaErrorCode -9998]
+2026-02-27 15:21:57,604 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:21:59,206 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:21:59,614 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:22:00,568 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:22:00,569 [INFO] src.stt: Transcript: and see if I can switch it to
+2026-02-27 15:22:00,571 [INFO] src.orchestrator: 🎙️ Heard: and see if I can switch it to
+2026-02-27 15:22:00,571 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:22:00,852 [INFO] src.orchestrator: 🚀 Processing queued transcript: and see if I can switch it to (Queue size: 0/2)
+2026-02-27 15:22:01,103 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:22:02,117 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:22:02,706 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:22:02,997 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:22:03,845 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:22:04,851 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:22:04,853 [INFO] src.stt: Transcript: headphones.
+2026-02-27 15:22:04,855 [INFO] src.orchestrator: 🎙️ Heard: headphones.
+2026-02-27 15:22:04,855 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:22:08,681 [INFO] src.tts: Generated TTS for text (46 chars) -> 141454 bytes
+2026-02-27 15:22:08,691 [INFO] src.audio: Playing audio on device 5 (141454 bytes)
+2026-02-27 15:22:08,693 [ERROR] src.audio: Failed to play audio on device 5: Error opening OutputStream: Invalid number of channels [PaErrorCode -9998]
+2026-02-27 15:22:19,704 [INFO] src.stt: Speech detected. Recording...
+INFO:     Shutting down
+2026-02-27 15:22:19,898 [INFO] src.ws: Avatar WebSocket client disconnected
+2026-02-27 15:22:19,898 [INFO] src.ws: Avatar WebSocket client disconnected
+INFO:     connection closed
+INFO:     connection closed
+INFO:     Finished server process [42560]
+2026-02-27 15:22:19,995 [INFO] src.main: Shutting down Chuks AI Stream Companion...
+2026-02-27 15:22:20,117 [INFO] src.stt: Mic listener stopped.
+ERROR:    Traceback (most recent call last):
+  File "C:\Users\johno\AppData\Roaming\Python\Python311\site-packages\starlette\routing.py", line 743, in lifespan
+    await receive()
+  File "C:\Users\johno\AppData\Roaming\Python\Python311\site-packages\uvicorn\lifespan\on.py", line 137, in receive
+    return await self.receive_queue.get()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\Python311\Lib\asyncio\queues.py", line 158, in get
+    await getter
+asyncio.exceptions.CancelledError
+
+PS C:\CreativeOS\01_Projects\Code\Personal_Stuff\2026-02-27_Chuks-YT-Live_AI> ^C
+PS C:\CreativeOS\01_Projects\Code\Personal_Stuff\2026-02-27_Chuks-YT-Live_AI> python -m uvicorn src.main:app --host 0.0.0.0 --port 8000
+INFO:     Started server process [24472]
+INFO:     Waiting for application startup.
+2026-02-27 15:24:17,055 [INFO] src.main: Starting up Chuks AI Stream Companion...
+2026-02-27 15:24:17,055 [INFO] src.main: Loaded persona. System prompt preview: Your name is Chuks. Personality: Witty, curious, speaks casually. Loves tech and gaming. Speaking St...
+2026-02-27 15:24:17,056 [INFO] src.stt: Starting mic listener on device 2...
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+2026-02-27 15:24:18,558 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:24:20,858 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:24:21,312 [INFO] src.stt: Transcribing with whisper-large-v3...
+INFO:     ('127.0.0.1', 59304) - "WebSocket /ws/avatar" [accepted]
+2026-02-27 15:24:21,759 [INFO] src.ws: Avatar WebSocket client connected
+INFO:     connection open
+INFO:     ('127.0.0.1', 59305) - "WebSocket /ws/avatar" [accepted]
+2026-02-27 15:24:21,977 [INFO] src.ws: Avatar WebSocket client connected
+INFO:     connection open
+2026-02-27 15:24:22,594 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:24:22,597 [INFO] src.stt: Transcript: takes a while to start up it takes a while
+2026-02-27 15:24:22,598 [INFO] src.orchestrator: 🎙️ Heard: takes a while to start up it takes a while     
+2026-02-27 15:24:22,599 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:24:22,690 [INFO] src.orchestrator: 🚀 Processing queued transcript: takes a while to start up it takes a while (Queue size: 0/2)
+2026-02-27 15:24:23,998 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:24:24,258 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:24:24,577 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:24:25,859 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:24:25,958 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:24:26,696 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:24:27,668 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:24:27,670 [INFO] src.stt: Transcript: to start the
+2026-02-27 15:24:27,671 [INFO] src.orchestrator: 🎙️ Heard: to start the
+2026-02-27 15:24:27,673 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:24:33,062 [INFO] src.tts: Generated TTS for text (109 chars) -> 386298 bytes
+2026-02-27 15:24:33,066 [INFO] src.audio: Playing audio on device 3 (386298 bytes)
+2026-02-27 15:24:36,388 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:24:36,847 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:24:38,597 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:24:38,599 [INFO] src.stt: Transcript: Ma Sorry, please come Because you and dad don't know where to get your chair Please come to the room I'm coming, one second
+2026-02-27 15:24:38,600 [INFO] src.orchestrator: 🎙️ Heard: Ma Sorry, please come Because you and dad don'tt know where to get your chair Please come to the room I'm coming, one second
+2026-02-27 15:24:38,600 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)
+2026-02-27 15:24:56,461 [INFO] src.orchestrator: 🚀 Processing queued transcript: to start the (Queue size: 1/2)
+2026-02-27 15:24:57,606 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:24:58,067 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:24:59,889 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:25:01,268 [INFO] src.tts: Generated TTS for text (46 chars) -> 123288 bytes
+2026-02-27 15:25:01,270 [INFO] src.audio: Playing audio on device 3 (123288 bytes)
+2026-02-27 15:25:01,800 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:25:02,198 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:25:03,114 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:25:03,114 [INFO] src.stt: Transcript: Thank you.
+2026-02-27 15:25:03,114 [INFO] src.orchestrator: 🎙️ Heard: Thank you.
+2026-02-27 15:25:03,115 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)
+2026-02-27 15:25:05,498 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:25:07,199 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:25:07,657 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:25:08,541 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:25:08,542 [INFO] src.stt: Transcript: Thank you.
+2026-02-27 15:25:08,543 [INFO] src.orchestrator: 🎙️ Heard: Thank you.
+2026-02-27 15:25:08,543 [WARNING] src.orchestrator: ⚠️ Queue is full (2). Discarding transcript: Thank youu.
+2026-02-27 15:25:19,167 [INFO] src.orchestrator: 🚀 Processing queued transcript: Ma Sorry, please come Because you and dad don't know where to get your chair Please come to the room I'm coming, one second (Queue size: 1/2)
+2026-02-27 15:25:20,299 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:25:20,717 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:25:24,176 [INFO] src.tts: Generated TTS for text (41 chars) -> 130310 bytes
+2026-02-27 15:25:24,178 [INFO] src.audio: Playing audio on device 3 (130310 bytes)
+2026-02-27 15:25:42,255 [INFO] src.orchestrator: 🚀 Processing queued transcript: Thank you. (Queue size: 0/2)
+2026-02-27 15:25:43,584 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:25:44,126 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:25:46,799 [INFO] src.tts: Generated TTS for text (37 chars) -> 114492 bytes
+2026-02-27 15:25:46,801 [INFO] src.audio: Playing audio on device 3 (114492 bytes)
+2026-02-27 15:26:02,221 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:26:04,622 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:26:05,054 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:26:05,984 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:26:05,984 [INFO] src.stt: Transcript: Thank you.
+2026-02-27 15:26:05,985 [INFO] src.orchestrator: 🎙️ Heard: Thank you.
+2026-02-27 15:26:05,985 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:26:06,285 [INFO] src.orchestrator: 🚀 Processing queued transcript: Thank you. (Queue size: 0/2)
+2026-02-27 15:26:07,221 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:26:07,440 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:26:07,910 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:26:09,122 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:26:09,852 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:26:10,105 [INFO] src.tts: Generated TTS for text (18 chars) -> 60586 bytes
+2026-02-27 15:26:10,107 [INFO] src.audio: Playing audio on device 3 (60586 bytes)
+2026-02-27 15:26:10,910 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:26:10,911 [INFO] src.stt: Transcript: Okay.
+2026-02-27 15:26:10,912 [INFO] src.orchestrator: 🎙️ Heard: Okay.
+2026-02-27 15:26:10,912 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 1/2)
+2026-02-27 15:26:13,230 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:26:15,632 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:26:16,097 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:26:17,072 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:26:17,072 [INFO] src.stt: Transcript: is also parodying.
+2026-02-27 15:26:17,073 [INFO] src.orchestrator: 🎙️ Heard: is also parodying.
+2026-02-27 15:26:17,073 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)
+2026-02-27 15:26:26,688 [INFO] src.orchestrator: 🚀 Processing queued transcript: Okay. (Queue size: 1/2)
+2026-02-27 15:26:27,748 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:26:28,291 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:26:30,700 [INFO] src.tts: Generated TTS for text (23 chars) -> 76548 bytes
+2026-02-27 15:26:30,704 [INFO] src.audio: Playing audio on device 3 (76548 bytes)
+2026-02-27 15:26:34,742 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:26:40,043 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:26:40,480 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:26:41,901 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:26:41,903 [INFO] src.stt: Transcript: Okay, so let's talk about something. You know what? You just say something and then let's talk about something.
+2026-02-27 15:26:41,904 [INFO] src.orchestrator: 🎙️ Heard: Okay, so let's talk about something. You know wwhat? You just say something and then let's talk about something.
+2026-02-27 15:26:41,904 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)
+2026-02-27 15:26:47,636 [INFO] src.orchestrator: 🚀 Processing queued transcript: is also parodying. (Queue size: 1/2)
+2026-02-27 15:26:48,751 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:26:49,197 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:26:52,338 [INFO] src.tts: Generated TTS for text (46 chars) -> 142596 bytes
+2026-02-27 15:26:52,341 [INFO] src.audio: Playing audio on device 3 (142596 bytes)
+2026-02-27 15:26:52,652 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:26:56,152 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:26:56,579 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:26:57,697 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:26:57,698 [INFO] src.stt: Transcript: Okay.
+2026-02-27 15:26:57,698 [INFO] src.orchestrator: 🎙️ Heard: Okay.
+2026-02-27 15:26:57,698 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)
+2026-02-27 15:26:58,753 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:27:04,653 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:27:05,090 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:27:06,379 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:27:06,379 [INFO] src.stt: Transcript: I said let's talk about something do you have anything in mind let's talk about something
+2026-02-27 15:27:06,380 [INFO] src.orchestrator: 🎙️ Heard: I said let's talk about something do you have aanything in mind let's talk about something
+2026-02-27 15:27:06,380 [WARNING] src.orchestrator: ⚠️ Queue is full (2). Discarding transcript: I said leet's talk about something do you have anything in mind let's talk about something
+2026-02-27 15:27:10,631 [INFO] src.orchestrator: 🚀 Processing queued transcript: Okay, so let's talk about something. You know what? You just say something and then let's talk about something. (Queue size: 1/2) 
+2026-02-27 15:27:11,984 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:27:12,421 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:27:16,277 [INFO] src.tts: Generated TTS for text (62 chars) -> 209212 bytes
+2026-02-27 15:27:16,278 [INFO] src.audio: Playing audio on device 3 (209212 bytes)
+2026-02-27 15:27:22,854 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:27:26,854 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:27:27,315 [INFO] src.stt: Transcribing with whisper-large-v3-turbo...
+2026-02-27 15:27:28,417 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:27:28,417 [INFO] src.stt: Transcript: are expensive for no reason
+2026-02-27 15:27:28,418 [INFO] src.orchestrator: 🎙️ Heard: are expensive for no reason
+2026-02-27 15:27:28,418 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)
+2026-02-27 15:27:35,956 [INFO] src.orchestrator: 🚀 Processing queued transcript: Okay. (Queue size: 1/2)
+2026-02-27 15:27:37,017 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2026-02-27 15:27:37,453 [INFO] httpx: HTTP Request: POST http://localhost:8880/v1/audio/speech "HTTP/1.1 200 OK"
+2026-02-27 15:27:40,143 [INFO] src.tts: Generated TTS for text (29 chars) -> 97788 bytes
+2026-02-27 15:27:40,144 [INFO] src.audio: Playing audio on device 3 (97788 bytes)
+2026-02-27 15:27:44,384 [INFO] src.stt: Speech detected. Recording...
+2026-02-27 15:27:46,590 [INFO] src.stt: Sending recorded audio to Groq Whisper...
+2026-02-27 15:27:47,171 [INFO] src.stt: Transcribing with whisper-large-v3...
+2026-02-27 15:27:48,100 [INFO] httpx: HTTP Request: POST https://api.groq.com/openai/v1/audio/transcriptions "HTTP/1.1 200 OK"
+2026-02-27 15:27:48,101 [INFO] src.stt: Transcript: overpriced
+2026-02-27 15:27:48,102 [INFO] src.orchestrator: 🎙️ Heard: overpriced
+2026-02-27 15:27:48,103 [INFO] src.orchestrator: ⏱️ Queued transcript (Size: 2/2)

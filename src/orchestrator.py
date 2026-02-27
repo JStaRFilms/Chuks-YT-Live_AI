@@ -2,6 +2,7 @@ import json
 import logging
 import os
 import asyncio
+import time
 from src.llm import chat_completion
 from src.tts import text_to_speech
 from src.audio import play_audio
@@ -12,6 +13,12 @@ logger = logging.getLogger(__name__)
 # In-memory conversation history
 conversation_history: list[dict] = []
 MAX_HISTORY = 30
+
+# Cooldown and Queue State
+last_response_time: float = 0.0
+trigger_queue: list[str] = []
+MAX_QUEUE_SIZE = 2
+is_playing_audio: bool = False
 
 def load_persona() -> str:
     """Load the persona configuration and build the system prompt."""
@@ -45,9 +52,17 @@ def build_context(user_text: str) -> list[dict]:
 
 async def play_and_idle(audio_bytes: bytes, device_index: int | None):
     """Play audio and manage avatar state."""
+    global last_response_time, is_playing_audio
+    is_playing_audio = True
     await manager.broadcast_state("talking")
-    await play_audio(audio_bytes, device_index)
-    await manager.broadcast_state("idle")
+    try:
+        await play_audio(audio_bytes, device_index)
+    except Exception as e:
+        logger.error(f"Error during audio playback: {e}")
+    finally:
+        last_response_time = time.time()
+        is_playing_audio = False
+        await manager.broadcast_state("idle")
 
 async def process_text_input(text: str) -> str:
     """Process a single text input through the full pipeline."""
@@ -85,13 +100,50 @@ async def process_text_input(text: str) -> str:
         
     return response_text
 
+async def process_queue_loop():
+    """Background task to process queued transcripts while respecting cooldown."""
+    global last_response_time, trigger_queue, is_playing_audio
+    
+    while True:
+        try:
+            if not trigger_queue:
+                await asyncio.sleep(0.5)
+                continue
+                
+            if is_playing_audio:
+                await asyncio.sleep(0.5)
+                continue
+                
+            cooldown = float(os.getenv("AI_COOLDOWN_SECONDS", 15))
+            time_since_last = time.time() - last_response_time
+            if time_since_last < cooldown:
+                # Wait for remainder of cooldown
+                await asyncio.sleep(cooldown - time_since_last)
+                continue
+                
+            # Cooldown passed, not playing audio, and queue has items
+            text = trigger_queue.pop(0)
+            logger.info(f"🚀 Processing queued transcript: {text} (Queue size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
+            
+            # This triggers process_text_input which starts play_and_idle in the background
+            await process_text_input(text)
+            
+            # Yield to event loop slightly so play_and_idle can set is_playing_audio = True
+            await asyncio.sleep(0.1)
+            
+        except Exception as e:
+            logger.error(f"Error in queue processing loop: {e}")
+            await asyncio.sleep(1.0)
+
 async def handle_mic_transcript(text: str) -> None:
     """Handle transcriptions coming from the background STT thread."""
     if not text.strip():
         return
         
     logger.info(f"🎙️ Heard: {text}")
-    try:
-        await process_text_input(text)
-    except Exception as e:
-        logger.error(f"Error processing mic transcript: {e}")
+    
+    if len(trigger_queue) < MAX_QUEUE_SIZE:
+        trigger_queue.append(text)
+        logger.info(f"⏱️ Queued transcript (Size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
+    else:
+        logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding transcript: {text}")

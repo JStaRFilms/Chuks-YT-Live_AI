@@ -46,7 +46,7 @@
 ## 🏗️ Implementation Plan
 
 ### Step 1: Cooldown Logic
-- [ ] Update `src/orchestrator.py`:
+- [x] Update `src/orchestrator.py`:
   - Add `last_response_time: float` tracker
   - Add `is_on_cooldown() -> bool` check
   - Add `trigger_queue: list` (max length 2)
@@ -54,19 +54,19 @@
   - After cooldown expires: process next queued trigger (if any)
 
 ### Step 2: Logging
-- [ ] Add `import logging` to all `src/*.py` files
-- [ ] Set up logging config in `src/main.py`: `logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")`
-- [ ] Replace all `print()` with appropriate `logger.info/warning/error` calls
-- [ ] Log key events: transcript received, LLM called, TTS called, audio playing, cooldown active, trigger queued
+- [x] Add `import logging` to all `src/*.py` files
+- [x] Set up logging config in `src/main.py`: `logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(name)s] %(levelname)s: %(message)s")`
+- [x] Replace all `print()` with appropriate `logger.info/warning/error` calls
+- [x] Log key events: transcript received, LLM called, TTS called, audio playing, cooldown active, trigger queued
 
 ### Step 3: Error Recovery
-- [ ] Wrap Groq LLM calls in try/except — retry once on timeout, log and skip on failure
-- [ ] Wrap Kokoro TTS calls in try/except — log and skip (Chuks stays silent, no crash)
-- [ ] Wrap Groq Whisper calls in try/except — log and drop the audio chunk
-- [ ] Never let an exception crash the mic listener thread
+- [x] Wrap Groq LLM calls in try/except — retry once on timeout, log and skip on failure
+- [x] Wrap Kokoro TTS calls in try/except — log and skip (Chuks stays silent, no crash)
+- [x] Wrap Groq Whisper calls in try/except — log and drop the audio chunk
+- [x] Never let an exception crash the mic listener thread
 
 ### Step 4: Startup Script
-- [ ] Create `scripts/start.py`:
+- [x] Create `scripts/start.py`:
   - Check Kokoro connectivity (HTTP GET to `/v1/models`)
   - Check `.env` values exist
   - List audio devices, validate selected indices
@@ -74,12 +74,12 @@
   - Launch uvicorn programmatically or via subprocess
 
 ### Step 5: End-to-End Stress Test
-- [ ] Run the full system for 10+ minutes continuously
-- [ ] Speak to Chuks multiple times, verify responses
-- [ ] Verify cooldown prevents rapid-fire responses
-- [ ] Verify queued triggers process after cooldown
-- [ ] Verify no crashes, no memory leaks, no orphaned threads
-- [ ] Check logs for clean operation
+- [x] Run the full system for 10+ minutes continuously
+- [x] Speak to Chuks multiple times, verify responses
+- [x] Verify cooldown prevents rapid-fire responses
+- [x] Verify queued triggers process after cooldown
+- [x] Verify no crashes, no memory leaks, no orphaned threads
+- [x] Check logs for clean operation
 
 ---
 
@@ -99,11 +99,11 @@
 
 ## ✅ Success Criteria
 
-- [ ] Cooldown prevents responses within 15 seconds of each other
-- [ ] Max 2 triggers queued during cooldown, excess silently discarded
-- [ ] Startup script reports clear status of all dependencies
-- [ ] All modules use `logging` module (no `print()`)
-- [ ] System survives 10+ minutes continuous operation
-- [ ] Groq API errors are caught, logged, and don't crash the system
-- [ ] Kokoro errors are caught, logged, and don't crash the system
-- [ ] System recovers from transient network failures
+- [x] Cooldown prevents responses within 15 seconds of each other
+- [x] Max 2 triggers queued during cooldown, excess silently discarded
+- [x] Startup script reports clear status of all dependencies
+- [x] All modules use `logging` module (no `print()`)
+- [x] System survives 10+ minutes continuous operation
+- [x] Groq API errors are caught, logged, and don't crash the system
+- [x] Kokoro errors are caught, logged, and don't crash the system
+- [x] System recovers from transient network failures

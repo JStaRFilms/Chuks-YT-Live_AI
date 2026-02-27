@@ -36,6 +36,10 @@ async def startup_event():
     # Start Mic Listener
     loop = asyncio.get_running_loop()
     mic_listener.start_listening(handle_mic_transcript, loop)
+    
+    # Start Background Queue Processor
+    from src.orchestrator import process_queue_loop
+    loop.create_task(process_queue_loop())
 
 @app.on_event("shutdown")
 async def shutdown_event():
