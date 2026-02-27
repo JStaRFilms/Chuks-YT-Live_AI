@@ -1,0 +1,32 @@
+# Task Completion Summary
+
+**Task:** 03_whisper_stt
+**Completed At:** 2026-02-27T14:10:00+01:00
+**Mode:** Code
+
+## Results
+
+Implemented a robust mic capture and Voice-to-Text pipeline. 
+- Integrated real-time capture from mic via sounddevice
+- RMS-based silence thresholding creates discrete chunks of speech vs quiet
+- Converted chunks into WAV bytes in memory and passed successfully into Groq Whisper STT API
+- Auto-rotating Groq whisper models (`whisper-large-v3`, `whisper-large-v3-turbo`) halves the rate limits
+- Safely wires `stt.py` async transcripts straight to `main.py` -> `orchestrator.py` which triggers character LLM generations. 
+
+## Files Created/Modified
+
+- `src/stt.py` (New feature module)
+- `src/orchestrator.py` (Piping stt payload)
+- `src/main.py` (Hooked STT into App launch and app shut down states)
+- `.env` (Updates indices)
+
+## Verification Status
+
+- [x] Python: PASS
+- [x] Transcriptions Logged: PASS 
+- [x] Tests: Manual Verification using Curl PASS
+
+## Notes
+
+Model starts listening as soon as FastApi `main.py` reloads.
+Audio devices properly configured and verified on user's machine (idx 2).

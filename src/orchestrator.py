@@ -70,3 +70,14 @@ async def process_text_input(text: str) -> str:
             asyncio.create_task(play_audio(audio_bytes, device_index))
         
     return response_text
+
+async def handle_mic_transcript(text: str) -> None:
+    """Handle transcriptions coming from the background STT thread."""
+    if not text.strip():
+        return
+        
+    logger.info(f"🎙️ Heard: {text}")
+    try:
+        await process_text_input(text)
+    except Exception as e:
+        logger.error(f"Error processing mic transcript: {e}")
