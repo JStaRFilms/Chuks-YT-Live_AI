@@ -94,12 +94,12 @@
 
 ## ✅ Success Criteria
 
-- [ ] `scripts/list_devices.py` lists all audio devices with indices
-- [ ] TTS wrapper converts text to audio bytes via Kokoro
-- [ ] Audio plays through the specified output device
-- [ ] Full loop: type message → Chuks speaks the response aloud
-- [ ] No crashes when Kokoro is slow or returns errors
-- [ ] Code follows `docs/Coding_Guidelines.md`
+- [x] `scripts/list_devices.py` lists all audio devices with indices ✅ Completed
+- [x] TTS wrapper converts text to audio bytes via Kokoro ✅ Completed
+- [x] Audio plays through the specified output device ✅ Completed
+- [x] Full loop: type message → Chuks speaks the response aloud ✅ Completed
+- [x] No crashes when Kokoro is slow or returns errors ✅ Completed
+- [x] Code follows `docs/Coding_Guidelines.md` ✅ Completed
 
 ---
 

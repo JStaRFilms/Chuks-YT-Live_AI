@@ -1,7 +1,10 @@
 import json
 import logging
 import os
+import asyncio
 from src.llm import chat_completion
+from src.tts import text_to_speech
+from src.audio import play_audio
 
 logger = logging.getLogger(__name__)
 
@@ -57,5 +60,13 @@ async def process_text_input(text: str) -> str:
         # Prune history if it exceeds max size
         if len(conversation_history) > MAX_HISTORY * 2:  # *2 because each exchange is 2 messages
             conversation_history = conversation_history[-(MAX_HISTORY * 2):]
+            
+        # Trigger TTS and audio playback
+        audio_bytes = await text_to_speech(response_text)
+        if audio_bytes:
+            device_idx = os.getenv("OUTPUT_DEVICE_INDEX")
+            device_index = int(device_idx) if device_idx else None
+            # Run playback in background so we don't block returning the response
+            asyncio.create_task(play_audio(audio_bytes, device_index))
         
     return response_text
