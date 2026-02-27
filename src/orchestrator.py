@@ -5,6 +5,7 @@ import asyncio
 from src.llm import chat_completion
 from src.tts import text_to_speech
 from src.audio import play_audio
+from src.ws import manager
 
 logger = logging.getLogger(__name__)
 
@@ -42,12 +43,21 @@ def build_context(user_text: str) -> list[dict]:
     messages.append({"role": "user", "content": user_text})
     return messages
 
+async def play_and_idle(audio_bytes: bytes, device_index: int | None):
+    """Play audio and manage avatar state."""
+    await manager.broadcast_state("talking")
+    await play_audio(audio_bytes, device_index)
+    await manager.broadcast_state("idle")
+
 async def process_text_input(text: str) -> str:
     """Process a single text input through the full pipeline."""
     global conversation_history
     
     # Build context
     messages = build_context(text)
+    
+    # Broadcast thinking state
+    await manager.broadcast_state("thinking")
     
     # Call LLM
     response_text = await chat_completion(messages)
@@ -66,8 +76,12 @@ async def process_text_input(text: str) -> str:
         if audio_bytes:
             device_idx = os.getenv("OUTPUT_DEVICE_INDEX")
             device_index = int(device_idx) if device_idx else None
-            # Run playback in background so we don't block returning the response
-            asyncio.create_task(play_audio(audio_bytes, device_index))
+            # Run playback in background with state management
+            asyncio.create_task(play_and_idle(audio_bytes, device_index))
+        else:
+            await manager.broadcast_state("idle")
+    else:
+        await manager.broadcast_state("idle")
         
     return response_text
 

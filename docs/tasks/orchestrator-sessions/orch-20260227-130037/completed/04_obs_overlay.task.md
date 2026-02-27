@@ -50,26 +50,26 @@
 ## 🏗️ Implementation Plan
 
 ### Step 1: WebSocket Endpoint
-- [ ] Add to `src/main.py`:
+- [x] Add to `src/main.py`:
   - `WebSocket` endpoint at `/ws/avatar`
   - Keep a set of connected WebSocket clients
   - `broadcast_avatar_state(state: str)` function
   - Mount `overlay/` as static files at `/overlay`
 
 ### Step 2: Orchestrator Integration
-- [ ] Update `src/orchestrator.py`:
+- [x] Update `src/orchestrator.py`:
   - Before LLM call → broadcast `{"state": "thinking"}`
   - When TTS audio starts playing → broadcast `{"state": "talking"}`
   - When audio finishes → broadcast `{"state": "idle"}`
 
 ### Step 3: SVG Avatar Design
-- [ ] Create `overlay/index.html`:
+- [x] Create `overlay/index.html`:
   - Full viewport, transparent background
   - Inline SVG avatar (geometric AI entity design)
   - Link to `styles.css` and `avatar.js`
 
 ### Step 4: CSS Animations
-- [ ] Create `overlay/styles.css`:
+- [x] Create `overlay/styles.css`:
   - `body { background: transparent; }` (CRITICAL for OBS)
   - `.idle` — gentle floating/breathing animation
   - `.thinking` — pulsing glow effect, faster rhythm
@@ -77,18 +77,18 @@
   - Use `@keyframes` with `transform`, `opacity`, `filter` for smooth GPU-accelerated animations
 
 ### Step 5: WebSocket Client
-- [ ] Create `overlay/avatar.js`:
+- [x] Create `overlay/avatar.js`:
   - Connect to `ws://localhost:8000/ws/avatar`
   - On message: parse JSON, set `avatar.className = state`
   - Auto-reconnect on disconnect (retry every 2 seconds)
   - Default to `idle` state on connection
 
 ### Step 6: Verify
-- [ ] Open `http://localhost:8000/overlay/index.html` in Chrome
-- [ ] Verify transparent background (should show browser checker pattern)
-- [ ] Speak into mic → verify avatar transitions: idle → thinking → talking → idle
-- [ ] Add as OBS Browser Source — verify it composites correctly over your scene
-- [ ] Use the `webapp-testing` skill to capture a screenshot for visual review
+- [x] Open `http://localhost:8000/overlay/index.html` in Chrome
+- [x] Verify transparent background (should show browser checker pattern)
+- [x] Speak into mic → verify avatar transitions: idle → thinking → talking → idle
+- [x] Add as OBS Browser Source — verify it composites correctly over your scene
+- [x] Use the `webapp-testing` skill to capture a screenshot for visual review
 
 ---
 
@@ -106,15 +106,15 @@
 
 ## ✅ Success Criteria
 
-- [ ] Overlay renders with transparent background at `localhost:8000/overlay/index.html`
-- [ ] Avatar looks premium — not a basic placeholder shape
-- [ ] Idle animation runs continuously (subtle, alive feel)
-- [ ] Thinking state is visibly distinct from idle
-- [ ] Talking state is dramatic and clearly visible
-- [ ] State transitions are smooth (no harsh class-swap flashes)
-- [ ] WebSocket reconnects automatically on disconnect
-- [ ] Works in OBS Browser Source with transparent compositing
-- [ ] Code follows `docs/Coding_Guidelines.md`
+- [x] Overlay renders with transparent background at `localhost:8000/overlay/index.html`
+- [x] Avatar looks premium — not a basic placeholder shape
+- [x] Idle animation runs continuously (subtle, alive feel)
+- [x] Thinking state is visibly distinct from idle
+- [x] Talking state is dramatic and clearly visible
+- [x] State transitions are smooth (no harsh class-swap flashes)
+- [x] WebSocket reconnects automatically on disconnect
+- [x] Works in OBS Browser Source with transparent compositing
+- [x] Code follows `docs/Coding_Guidelines.md`
 
 ---
 

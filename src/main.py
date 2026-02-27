@@ -1,5 +1,6 @@
 import logging
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, WebSocket, WebSocketDisconnect
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from dotenv import load_dotenv
 
@@ -9,6 +10,7 @@ load_dotenv()
 from src.orchestrator import process_text_input, load_persona, handle_mic_transcript
 import asyncio
 from src.stt import MicListener
+from src.ws import manager
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -51,3 +53,15 @@ async def chat_endpoint(request: ChatRequest):
     except Exception as e:
         logger.error(f"Error processing chat request: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+@app.websocket("/ws/avatar")
+async def websocket_avatar_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+    try:
+        while True:
+            # Keep connection alive
+            data = await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+
+app.mount("/overlay", StaticFiles(directory="overlay", html=True), name="overlay")

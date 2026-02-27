@@ -1,0 +1,144 @@
+:root {
+    --cyan: #00E5FF;
+    --purple: #7C3AED;
+    --electric: #3B82F6;
+    --glow-idle: drop-shadow(0 0 10px rgba(0, 229, 255, 0.3));
+    --glow-thinking: drop-shadow(0 0 20px rgba(124, 58, 237, 0.6));
+    --glow-talking: drop-shadow(0 0 25px rgba(0, 229, 255, 0.8));
+}
+
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100vw;
+    height: 100vh;
+    background: transparent; /* CRITICAL for OBS */
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: sans-serif;
+}
+
+#avatar {
+    width: 250px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s ease;
+}
+
+.ai-entity {
+    width: 100%;
+    height: 100%;
+    color: var(--cyan);
+}
+
+/* Base Styles */
+.core { opacity: 0.8; }
+.ring-outer { opacity: 0.4; }
+.ring-inner { opacity: 0.6; }
+.nodes { transform-origin: center; }
+.mouth { opacity: 0; transform-origin: center; transition: opacity 0.2s ease; }
+
+/* ------------------
+   IDLE STATE
+   ------------------ */
+.idle .glow-container {
+    filter: var(--glow-idle);
+    animation: breathe 4s ease-in-out infinite;
+}
+
+.idle .ring-outer {
+    animation: spinReverse 20s linear infinite;
+}
+
+.idle .nodes {
+    animation: spin 15s linear infinite;
+}
+
+/* ------------------
+   THINKING STATE
+   ------------------ */
+.thinking .glow-container {
+    filter: var(--glow-thinking);
+    animation: pulse 1s ease-in-out infinite;
+}
+
+.thinking .ai-entity {
+    color: var(--purple);
+}
+
+.thinking .ring-outer, .thinking .ring-inner {
+    stroke-dasharray: 20 10;
+    animation: spin 3s linear infinite;
+}
+
+.thinking .nodes {
+    animation: spinReverse 2s linear infinite;
+}
+
+/* ------------------
+   TALKING STATE
+   ------------------ */
+.talking .glow-container {
+    filter: var(--glow-talking);
+    animation: energize 0.5s ease-in-out infinite alternate;
+}
+
+.talking .mouth {
+    opacity: 1;
+    animation: talk-mouth 0.15s ease-in-out infinite alternate;
+}
+
+.talking .ring-outer {
+    animation: expand 1s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+    stroke: var(--purple);
+}
+
+.talking .ring-inner {
+    animation: spinReverse 4s linear infinite;
+}
+
+.talking .nodes {
+    animation: spin 5s linear infinite;
+}
+
+/* ------------------
+   KEYFRAMES
+   ------------------ */
+@keyframes breathe {
+    0%, 100% { transform: scale(1) translateY(0); filter: drop-shadow(0 0 10px rgba(0, 229, 255, 0.3)); }
+    50% { transform: scale(1.02) translateY(-5px); filter: drop-shadow(0 0 15px rgba(0, 229, 255, 0.5)); }
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; filter: drop-shadow(0 0 30px rgba(124, 58, 237, 0.9)); }
+}
+
+@keyframes energize {
+    0% { transform: scale(1) rotate(0deg); }
+    100% { transform: scale(1.08) rotate(2deg); filter: drop-shadow(0 0 40px rgba(59, 130, 246, 0.8)); }
+}
+
+@keyframes talk-mouth {
+    0% { transform: scaleY(0.5); }
+    100% { transform: scaleY(1.5); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes spinReverse {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+@keyframes expand {
+    0% { transform: scale(1); opacity: 0.8; }
+    100% { transform: scale(1.3); opacity: 0; }
+}
