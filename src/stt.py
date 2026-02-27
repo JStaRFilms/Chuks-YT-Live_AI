@@ -9,6 +9,15 @@ import numpy as np
 import sounddevice as sd
 from groq import Groq
 
+# Lazy import to avoid circular dependency
+def _is_ai_speaking() -> bool:
+    """Check if the AI is currently playing audio (echo suppression)."""
+    try:
+        from src.orchestrator import is_playing_audio
+        return is_playing_audio
+    except ImportError:
+        return False
+
 logger = logging.getLogger(__name__)
 
 # Config
@@ -79,7 +88,11 @@ class MicListener:
         """Callback invoked by sounddevice for each audio block."""
         if status:
             logger.warning(f"Audio status: {status}")
-            
+
+        # Echo suppression: ignore mic input while Chuks is speaking
+        if _is_ai_speaking():
+            return
+
         is_chunk_silent = is_silent(indata)
         
         if self.state == "WAITING_FOR_SPEECH":

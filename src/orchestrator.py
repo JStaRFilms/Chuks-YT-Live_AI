@@ -3,7 +3,8 @@ import logging
 import os
 import asyncio
 import time
-from src.llm import chat_completion
+import re
+from src.llm import chat_completion, chat_completion_stream
 from src.tts import text_to_speech
 from src.audio import play_audio
 from src.ws import manager
@@ -17,8 +18,11 @@ MAX_HISTORY = 30
 # Cooldown and Queue State
 last_response_time: float = 0.0
 trigger_queue: list[str] = []
-MAX_QUEUE_SIZE = 2
+MAX_QUEUE_SIZE = 5
 is_playing_audio: bool = False
+
+# Wake word configuration
+WAKE_WORDS = ["hey chuks", "yo chuks", "chuks"]
 
 def load_persona() -> str:
     """Load the persona configuration and build the system prompt."""
@@ -50,23 +54,20 @@ def build_context(user_text: str) -> list[dict]:
     messages.append({"role": "user", "content": user_text})
     return messages
 
-async def play_and_idle(audio_bytes: bytes, device_index: int | None):
-    """Play audio and manage avatar state."""
-    global last_response_time, is_playing_audio
-    is_playing_audio = True
-    await manager.broadcast_state("talking")
+async def play_chunk(audio_bytes: bytes, device_index: int | None):
+    """Play a single audio chunk on the output device."""
     try:
         await play_audio(audio_bytes, device_index)
     except Exception as e:
         logger.error(f"Error during audio playback: {e}")
-    finally:
-        last_response_time = time.time()
-        is_playing_audio = False
-        await manager.broadcast_state("idle")
 
 async def process_text_input(text: str) -> str:
-    """Process a single text input through the full pipeline."""
-    global conversation_history
+    """
+    Process a single text input through the streaming pipeline.
+    Streams LLM response sentence-by-sentence, converting each to TTS
+    and playing audio as soon as the first sentence is ready.
+    """
+    global conversation_history, last_response_time, is_playing_audio
     
     # Build context
     messages = build_context(text)
@@ -74,31 +75,52 @@ async def process_text_input(text: str) -> str:
     # Broadcast thinking state
     await manager.broadcast_state("thinking")
     
-    # Call LLM
-    response_text = await chat_completion(messages)
+    device_idx = os.getenv("OUTPUT_DEVICE_INDEX")
+    device_index = int(device_idx) if device_idx else None
+    
+    full_response = ""
+    first_chunk = True
+    
+    try:
+        async for sentence in chat_completion_stream(messages):
+            if sentence.startswith("Error:"):
+                full_response = sentence
+                await manager.broadcast_state("idle")
+                return full_response
+            
+            full_response += sentence + " "
+            
+            # Generate TTS for this sentence
+            audio_bytes = await text_to_speech(sentence)
+            if audio_bytes:
+                if first_chunk:
+                    # First sentence ready — switch to talking state
+                    is_playing_audio = True
+                    await manager.broadcast_state("talking")
+                    first_chunk = False
+                
+                # Play this chunk (blocking until done, then next chunk plays)
+                await play_chunk(audio_bytes, device_index)
+    except Exception as e:
+        logger.error(f"Error in streaming pipeline: {e}")
+        full_response = f"Error: {e}"
+    finally:
+        last_response_time = time.time()
+        is_playing_audio = False
+        await manager.broadcast_state("idle")
+    
+    full_response = full_response.strip()
     
     # Append to history if it's not an error response
-    if not response_text.startswith("Error:"):
+    if full_response and not full_response.startswith("Error:"):
         conversation_history.append({"role": "user", "content": text})
-        conversation_history.append({"role": "assistant", "content": response_text})
+        conversation_history.append({"role": "assistant", "content": full_response})
     
         # Prune history if it exceeds max size
-        if len(conversation_history) > MAX_HISTORY * 2:  # *2 because each exchange is 2 messages
+        if len(conversation_history) > MAX_HISTORY * 2:
             conversation_history = conversation_history[-(MAX_HISTORY * 2):]
-            
-        # Trigger TTS and audio playback
-        audio_bytes = await text_to_speech(response_text)
-        if audio_bytes:
-            device_idx = os.getenv("OUTPUT_DEVICE_INDEX")
-            device_index = int(device_idx) if device_idx else None
-            # Run playback in background with state management
-            asyncio.create_task(play_and_idle(audio_bytes, device_index))
-        else:
-            await manager.broadcast_state("idle")
-    else:
-        await manager.broadcast_state("idle")
         
-    return response_text
+    return full_response
 
 async def process_queue_loop():
     """Background task to process queued transcripts while respecting cooldown."""
@@ -114,7 +136,7 @@ async def process_queue_loop():
                 await asyncio.sleep(0.5)
                 continue
                 
-            cooldown = float(os.getenv("AI_COOLDOWN_SECONDS", 15))
+            cooldown = float(os.getenv("AI_COOLDOWN_SECONDS", 8))
             time_since_last = time.time() - last_response_time
             if time_since_last < cooldown:
                 # Wait for remainder of cooldown
@@ -125,25 +147,59 @@ async def process_queue_loop():
             text = trigger_queue.pop(0)
             logger.info(f"🚀 Processing queued transcript: {text} (Queue size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
             
-            # This triggers process_text_input which starts play_and_idle in the background
             await process_text_input(text)
             
-            # Yield to event loop slightly so play_and_idle can set is_playing_audio = True
+            # Yield to event loop
             await asyncio.sleep(0.1)
             
         except Exception as e:
             logger.error(f"Error in queue processing loop: {e}")
             await asyncio.sleep(1.0)
 
+# Minimum thresholds for transcript filtering
+MIN_WORD_COUNT = 3
+MIN_CHAR_COUNT = 15
+
+def strip_wake_word(text: str) -> str | None:
+    """
+    Check for wake word and strip it from the transcript.
+    Returns the cleaned text if wake word found, None otherwise.
+    """
+    lower = text.lower().strip()
+    
+    # Sort wake words longest-first so "hey chuks" matches before "chuks"
+    for word in sorted(WAKE_WORDS, key=len, reverse=True):
+        if lower.startswith(word):
+            remainder = text[len(word):].strip(", ").strip()
+            return remainder if remainder else None
+    
+    return None
+
 async def handle_mic_transcript(text: str) -> None:
     """Handle transcriptions coming from the background STT thread."""
-    if not text.strip():
+    cleaned = text.strip()
+    if not cleaned:
         return
-        
-    logger.info(f"🎙️ Heard: {text}")
+
+    logger.info(f"🎙️ Heard: {cleaned}")
+
+    # Wake word detection — only respond if Chuks is addressed
+    result = strip_wake_word(cleaned)
+    if result is None:
+        logger.info(f"🔇 No wake word detected, ignoring: {cleaned}")
+        return
     
+    cleaned = result
+    logger.info(f"🔊 Wake word detected! Message: {cleaned}")
+
+    # Filter out short fragments and noise
+    word_count = len(cleaned.split())
+    if word_count < MIN_WORD_COUNT or len(cleaned) < MIN_CHAR_COUNT:
+        logger.info(f"🚫 Filtered short transcript ({word_count} words, {len(cleaned)} chars): {cleaned}")
+        return
+
     if len(trigger_queue) < MAX_QUEUE_SIZE:
-        trigger_queue.append(text)
+        trigger_queue.append(cleaned)
         logger.info(f"⏱️ Queued transcript (Size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
     else:
-        logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding transcript: {text}")
+        logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding transcript: {cleaned}")

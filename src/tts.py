@@ -5,10 +5,20 @@ from typing import Optional
 
 logger = logging.getLogger(__name__)
 
+# Singleton HTTP client — reuse connections instead of opening new ones each time
+_client: Optional[httpx.AsyncClient] = None
+
+def _get_client() -> httpx.AsyncClient:
+    """Get or create the singleton httpx client for Kokoro."""
+    global _client
+    if _client is None or _client.is_closed:
+        _client = httpx.AsyncClient(timeout=30.0)
+    return _client
+
 async def text_to_speech(text: str) -> Optional[bytes]:
     """
     Sends text to the local Kokoro TTS engine and returns raw PCM bytes.
-    Expects KOKORO_BASE_URL and KOKORO_VOICE to be set in the environment.
+    Uses a persistent connection pool for lower latency.
     """
     if not text.strip():
         return None
@@ -25,13 +35,13 @@ async def text_to_speech(text: str) -> Optional[bytes]:
     }
 
     try:
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(endpoint, json=payload)
-            response.raise_for_status()
-            
-            audio_bytes = response.content
-            logger.info(f"Generated TTS for text ({len(text)} chars) -> {len(audio_bytes)} bytes")
-            return audio_bytes
+        client = _get_client()
+        response = await client.post(endpoint, json=payload)
+        response.raise_for_status()
+        
+        audio_bytes = response.content
+        logger.info(f"Generated TTS for text ({len(text)} chars) -> {len(audio_bytes)} bytes")
+        return audio_bytes
     except httpx.RequestError as e:
         logger.error(f"Error communicating with Kokoro TTS: {e}")
     except httpx.HTTPStatusError as e:
