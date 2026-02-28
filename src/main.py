@@ -12,6 +12,7 @@ from src.orchestrator import process_text_input, load_persona, handle_mic_transc
 import asyncio
 from src.stt import MicListener
 from src.ws import manager
+from src.dashboard_api import router as dashboard_router
 # Configure logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(name)s: %(message)s")
 logger = logging.getLogger(__name__)
@@ -92,4 +93,8 @@ async def websocket_avatar_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
 
+app.include_router(dashboard_router)
 app.mount("/overlay", StaticFiles(directory="overlay", html=True), name="overlay")
+import os
+os.makedirs("dashboard", exist_ok=True)
+app.mount("/dashboard", StaticFiles(directory="dashboard", html=True), name="dashboard")

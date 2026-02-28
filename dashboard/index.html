@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chuks AI Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="dashboard-container">
+
+        <!-- Header / Status Bar -->
+        <header class="header panel">
+            <div class="brand">
+                <h1>CHUKS <span>AI</span></h1>
+                <div class="pulse-indicator"></div>
+            </div>
+            <div class="status-bar" id="status-bar">
+                <div class="status-item" id="status-mic">
+                    <span class="dot"></span> Mic
+                </div>
+                <div class="status-item" id="status-groq">
+                    <span class="dot"></span> Groq API
+                </div>
+                <div class="status-item" id="status-kokoro">
+                    <span class="dot"></span> Kokoro TTS
+                </div>
+            </div>
+        </header>
+
+        <div class="main-grid">
+
+            <!-- Left Column: Avatar & Memory -->
+            <div class="left-col">
+                <section class="panel avatar-panel">
+                    <h2>Avatar State</h2>
+                    <div class="avatar-preview-container">
+                        <div class="avatar-state-badge" id="avatar-state-badge">IDLE</div>
+                        <div class="avatar-glow" id="avatar-glow"></div>
+                        <img src="/overlay/avatar-idle.svg" alt="Avatar Preview" id="avatar-img"
+                            onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMDAgMTAwIj48Y2lyY2xlIGN4PSI1MCIgY3k9IjUwIiByPSI0MCIgZmlsbD0iIzFmMjkyYyIvPjwvc3ZnPg=='" />
+                    </div>
+                </section>
+
+                <section class="panel memory-panel">
+                    <h2>System Memory</h2>
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-label">Session ID</div>
+                            <div class="stat-value" id="stat-session">---</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-label">Pinned Memories</div>
+                            <div class="stat-value" id="stat-pinned">0</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="panel queue-panel">
+                    <div class="panel-header">
+                        <h2>Trigger Queue</h2>
+                        <span class="badge" id="queue-count">0/5</span>
+                    </div>
+                    <ul class="queue-list" id="queue-list">
+                        <!-- Queue items injected here -->
+                    </ul>
+                </section>
+            </div>
+
+            <!-- Middle Column: Conversation Feed -->
+            <div class="center-col">
+                <section class="panel chat-panel">
+                    <div class="panel-header">
+                        <h2>Live Conversation</h2>
+                    </div>
+                    <div class="chat-feed" id="chat-feed">
+                        <!-- Chat messages injected here -->
+                        <div class="empty-state">Waiting for dialogue...</div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right Column: YT Chat & Raw Logs -->
+            <div class="right-col">
+                <section class="panel yt-chat-panel" style="display: none;">
+                    <h2>YouTube Chat</h2>
+                    <div class="yt-feed" id="yt-feed">
+                        <!-- YT integration placeholder -->
+                        <div class="empty-state">Integration not enabled</div>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+
+</html>

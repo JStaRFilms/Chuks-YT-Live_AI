@@ -13,6 +13,17 @@ from src.memory import get_context_additions, summarize_session
 
 logger = logging.getLogger(__name__)
 
+_last_avatar_state = "idle"
+
+async def notify_dashboard():
+    try:
+        from src.dashboard_api import get_system_status
+        from src.ws import dashboard_manager
+        state = await get_system_status()
+        await dashboard_manager.broadcast_json({"type": "full_state", "data": state})
+    except Exception as e:
+        logger.error(f"Error notifying dashboard: {e}")
+
 # In-memory conversation history
 conversation_history: list[dict] = []
 MAX_HISTORY = 30
@@ -23,6 +34,7 @@ async def setup_session():
     current_session_id = await create_session()
     if current_session_id:
         logger.info(f"Started new session with ID: {current_session_id}")
+        await notify_dashboard()
 
 async def cleanup_session():
     global current_session_id
@@ -31,6 +43,7 @@ async def cleanup_session():
         await end_session(current_session_id)
         await summarize_session(current_session_id)
         current_session_id = None
+        await notify_dashboard()
 
 # Cooldown and Queue State
 last_response_time: float = 0.0
@@ -96,7 +109,10 @@ async def process_text_input(text: str) -> str:
     messages = await build_context(text)
     
     # Broadcast thinking state
+    global _last_avatar_state
+    _last_avatar_state = "thinking"
     await manager.broadcast_state("thinking")
+    await notify_dashboard()
     
     device_idx = os.getenv("OUTPUT_DEVICE_INDEX")
     device_index = int(device_idx) if device_idx else None
@@ -108,7 +124,9 @@ async def process_text_input(text: str) -> str:
         async for sentence in chat_completion_stream(messages):
             if sentence.startswith("Error:"):
                 full_response = sentence
+                _last_avatar_state = "idle"
                 await manager.broadcast_state("idle")
+                await notify_dashboard()
                 return full_response
             
             full_response += sentence + " "
@@ -119,7 +137,9 @@ async def process_text_input(text: str) -> str:
                 if first_chunk:
                     # First sentence ready — switch to talking state
                     is_playing_audio = True
+                    _last_avatar_state = "talking"
                     await manager.broadcast_state("talking")
+                    await notify_dashboard()
                     first_chunk = False
                 
                 # Play this chunk (blocking until done, then next chunk plays)
@@ -130,7 +150,9 @@ async def process_text_input(text: str) -> str:
     finally:
         last_response_time = time.time()
         is_playing_audio = False
+        _last_avatar_state = "idle"
         await manager.broadcast_state("idle")
+        await notify_dashboard()
     
     full_response = full_response.strip()
     
@@ -175,6 +197,7 @@ async def process_queue_loop():
             # Cooldown passed, not playing audio, and queue has items
             text = trigger_queue.pop(0)
             logger.info(f"🚀 Processing queued transcript: {text} (Queue size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
+            await notify_dashboard()
             
             await process_text_input(text)
             
@@ -230,6 +253,7 @@ async def handle_mic_transcript(text: str) -> None:
     if len(trigger_queue) < MAX_QUEUE_SIZE:
         trigger_queue.append(cleaned)
         logger.info(f"⏱️ Queued transcript (Size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
+        await notify_dashboard()
     else:
         logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding transcript: {cleaned}")
 
@@ -247,6 +271,7 @@ async def handle_chat_message(viewer_name: str, text: str) -> None:
     if len(trigger_queue) < MAX_QUEUE_SIZE:
         trigger_queue.append(formatted_msg)
         logger.info(f"⏱️ Queued chat message (Size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
+        await notify_dashboard()
     else:
         logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding chat message from {viewer_name}.")
 
@@ -266,3 +291,4 @@ async def stream_greeting():
         trigger_queue.append(prompt)
         logger.info("👋 Queued stream startup greeting.")
         stream_greeting_fired = True
+        await notify_dashboard()

@@ -19,10 +19,13 @@ class ConnectionManager:
 
     async def broadcast_state(self, state: str):
         message = {"state": state}
+        await self.broadcast_json(message)
+
+    async def broadcast_json(self, data: dict):
         dead_connections = []
         for connection in self.active_connections:
             try:
-                await connection.send_json(message)
+                await connection.send_json(data)
             except Exception as e:
                 logger.error(f"Error sending to websocket: {e}")
                 dead_connections.append(connection)
@@ -31,5 +34,6 @@ class ConnectionManager:
         for dead in dead_connections:
             self.disconnect(dead)
 
-# Global singleton
-manager = ConnectionManager()
+# Global singletons
+manager = ConnectionManager() # For Avatar Overlay
+dashboard_manager = ConnectionManager() # For Dashboard UI

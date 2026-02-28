@@ -64,22 +64,22 @@ FastAPI ──► /dashboard (HTML/CSS/JS)
 - **[MODIFY]** `src/ws.py` — Add separate ConnectionManager for dashboard clients
 
 ### Implementation Steps
-- [ ] Design the dashboard layout (wireframe in markdown or mockup)
-- [ ] Create `dashboard/` directory with HTML, CSS, JS
-- [ ] Create `/api/status` endpoint returning JSON system state
-- [ ] Create `/ws/dashboard` WebSocket for real-time pushes
-- [ ] Wire orchestrator to push events (queue change, new message, state change)
-- [ ] Style with premium dark theme
-- [ ] Mount at `/dashboard` in FastAPI
-- [ ] Test: open dashboard while talking to Chuks
+- [x] Design the dashboard layout (wireframe in markdown or mockup)
+- [x] Create `dashboard/` directory with HTML, CSS, JS
+- [x] Create `/api/status` endpoint returning JSON system state
+- [x] Create `/ws/dashboard` WebSocket for real-time pushes
+- [x] Wire orchestrator to push events (queue change, new message, state change)
+- [x] Style with premium dark theme
+- [x] Mount at `/dashboard` in FastAPI
+- [x] Test: open dashboard while talking to Chuks
 
 ### Success Criteria
-- [ ] Dashboard loads at `http://localhost:8000/dashboard/`
-- [ ] Real-time updates when speaking to Chuks
-- [ ] Queue contents visible and update live
-- [ ] Conversation history scrolls with new messages
-- [ ] System status shows green/red indicators
-- [ ] No regression on overlay or audio pipeline
+- [x] Dashboard loads at `http://localhost:8000/dashboard/`
+- [x] Real-time updates when speaking to Chuks
+- [x] Queue contents visible and update live
+- [x] Conversation history scrolls with new messages
+- [x] System status shows green/red indicators
+- [x] No regression on overlay or audio pipeline
 
 ### Gotchas
 - Dashboard WS and overlay WS are separate — use different ConnectionManagers
