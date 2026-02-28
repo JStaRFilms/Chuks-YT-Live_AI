@@ -8,12 +8,29 @@ from src.llm import chat_completion, chat_completion_stream
 from src.tts import text_to_speech
 from src.audio import play_audio
 from src.ws import manager
+from src.db import create_session, end_session, add_message
+from src.memory import get_context_additions, summarize_session
 
 logger = logging.getLogger(__name__)
 
 # In-memory conversation history
 conversation_history: list[dict] = []
 MAX_HISTORY = 30
+current_session_id: int | None = None
+
+async def setup_session():
+    global current_session_id
+    current_session_id = await create_session()
+    if current_session_id:
+        logger.info(f"Started new session with ID: {current_session_id}")
+
+async def cleanup_session():
+    global current_session_id
+    if current_session_id:
+        logger.info(f"Ending and summarizing session {current_session_id}...")
+        await end_session(current_session_id)
+        await summarize_session(current_session_id)
+        current_session_id = None
 
 # Cooldown and Queue State
 last_response_time: float = 0.0
@@ -46,9 +63,15 @@ def load_persona() -> str:
         logger.error(f"Failed to load persona: {e}")
         return "You are a helpful AI assistant."
 
-def build_context(user_text: str) -> list[dict]:
+async def build_context(user_text: str) -> list[dict]:
     """Build the full context array (system prompt + history + new user message)."""
     system_prompt = load_persona()
+    
+    # Add persistent memory context
+    additions = await get_context_additions()
+    if additions:
+        system_prompt += f"\n\n{additions}"
+        
     messages = [{"role": "system", "content": system_prompt}]
     messages.extend(conversation_history)
     messages.append({"role": "user", "content": user_text})
@@ -70,7 +93,7 @@ async def process_text_input(text: str) -> str:
     global conversation_history, last_response_time, is_playing_audio
     
     # Build context
-    messages = build_context(text)
+    messages = await build_context(text)
     
     # Broadcast thinking state
     await manager.broadcast_state("thinking")
@@ -116,6 +139,12 @@ async def process_text_input(text: str) -> str:
         conversation_history.append({"role": "user", "content": text})
         conversation_history.append({"role": "assistant", "content": full_response})
     
+        if current_session_id is not None:
+            # Fire and forget DB saves
+            loop = asyncio.get_running_loop()
+            loop.create_task(add_message(current_session_id, "user", text))
+            loop.create_task(add_message(current_session_id, "assistant", full_response))
+
         # Prune history if it exceeds max size
         if len(conversation_history) > MAX_HISTORY * 2:
             conversation_history = conversation_history[-(MAX_HISTORY * 2):]

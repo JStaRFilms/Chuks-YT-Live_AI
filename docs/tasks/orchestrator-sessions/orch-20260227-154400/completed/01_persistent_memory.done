@@ -1,0 +1,28 @@
+# Task Completion Summary
+
+**Task:** 01_persistent_memory.task.md
+**Completed At:** 2026-02-28T09:55:00+01:00
+**Mode:** Code
+
+## Results
+
+Implemented persistent memory using Neon Postgres and asyncpg. Modified the orchestrator and main execution loops to ensure session states, transcripts, and pinned memories are robustly preserved across runs and injected into the persona context.
+
+## Files Created/Modified
+
+- `src/db.py` (NEW) - Handles Neon Postgres connection pooling and CRUD operations.
+- `src/memory.py` (NEW) - Manages context assembly and background LLM summarization.
+- `src/orchestrator.py` (MODIFIED) - Integrated session tracking, persistent DB saves (fire-and-forget logic so audio plays smoothly), and enriched `build_context`.
+- `src/main.py` (MODIFIED) - Integrated `init_db`, `close_db`, `setup_session`, and `cleanup_session`.
+- `.env` (MODIFIED) - Inserted the `DATABASE_URL`.
+- `requirements.txt` (MODIFIED) - Added `asyncpg`.
+
+## Verification Status
+
+- [x] Syntax checking imports (`python -c`): PASS
+- [x] Tested table creation schema: PASS
+- [x] Verified `asyncpg` installation: PASS
+
+## Notes
+
+A new Neon database (`dry-violet-83989035`) has been provisioned under the specified configuration. Fire-and-forget saving with `asyncio.create_task()` enables near instant persistence without audio freezing.

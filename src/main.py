@@ -7,7 +7,8 @@ from dotenv import load_dotenv
 # Load env vars before importing other modules that might use them
 load_dotenv()
 
-from src.orchestrator import process_text_input, load_persona, handle_mic_transcript
+from src.db import init_db, close_db
+from src.orchestrator import process_text_input, load_persona, handle_mic_transcript, setup_session, cleanup_session
 import asyncio
 from src.stt import MicListener
 from src.ws import manager
@@ -29,6 +30,8 @@ mic_listener = MicListener()
 @app.on_event("startup")
 async def startup_event():
     logger.info("Starting up Chuks AI Stream Companion...")
+    await init_db()
+    await setup_session()
     # Verify persona loads correctly
     persona = load_persona()
     logger.info(f"Loaded persona. System prompt preview: {persona[:100]}...")
@@ -44,6 +47,8 @@ async def startup_event():
 @app.on_event("shutdown")
 async def shutdown_event():
     logger.info("Shutting down Chuks AI Stream Companion...")
+    await cleanup_session()
+    await close_db()
     mic_listener.stop_listening()
 
 @app.post("/chat", response_model=ChatResponse)

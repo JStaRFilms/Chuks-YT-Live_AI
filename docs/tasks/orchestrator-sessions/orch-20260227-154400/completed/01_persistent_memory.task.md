@@ -61,19 +61,19 @@ CREATE TABLE pinned_memories (
 - **[MODIFY]** `requirements.txt` — Add `asyncpg`
 
 ### Implementation Steps
-- [ ] Add `asyncpg` to requirements
-- [ ] Create `src/db.py` with connection pool + CRUD functions
-- [ ] Create `src/memory.py` with get_last_session_summary, get_pinned_memories
-- [ ] Modify `orchestrator.py`: create session on startup, persist messages, load summary into context
-- [ ] Modify `main.py`: init/close DB pool
-- [ ] Add `DATABASE_URL` to `.env`
-- [ ] Test: restart server, verify messages persist
+- [x] Add `asyncpg` to requirements
+- [x] Create `src/db.py` with connection pool + CRUD functions
+- [x] Create `src/memory.py` with get_last_session_summary, get_pinned_memories
+- [x] Modify `orchestrator.py`: create session on startup, persist messages, load summary into context
+- [x] Modify `main.py`: init/close DB pool
+- [x] Add `DATABASE_URL` to `.env`
+- [x] Test: restart server, verify messages persist
 
 ### Success Criteria
-- [ ] Messages survive server restart
-- [ ] New session starts with previous session's summary injected into context
-- [ ] Pinned memories are included in system prompt
-- [ ] No regression on existing MUS features
+- [x] Messages survive server restart
+- [x] New session starts with previous session's summary injected into context
+- [x] Pinned memories are included in system prompt
+- [x] No regression on existing MUS features
 
 ### Gotchas
 - Use `asyncpg` not `psycopg2` — we're async everywhere
