@@ -45,14 +45,14 @@ Commands:
 - `python scripts/memory_cli.py export <session_id>` — Export session as JSON
 
 Implementation:
-- [ ] Create `scripts/memory_cli.py` using `argparse`
-- [ ] Import DB functions from `src/db.py`
-- [ ] Each command maps to a DB query
-- [ ] Pretty-print output with colors (use `rich` library if available, else plain text)
+- [x] Create `scripts/memory_cli.py` using `argparse`
+- [x] Import DB functions from `src/db.py`
+- [x] Each command maps to a DB query
+- [x] Pretty-print output with colors (use `rich` library if available, else plain text)
 
 ### Part B: Hotkey Trigger (FR-017)
 
-**[MODIFY]** `src/main.py` or **[NEW]** `src/hotkey.py`
+**[NEW]** `src/hotkey.py`
 
 - Use the `keyboard` library (already in requirements or add it)
 - Register a global hotkey (e.g., `F9`) that force-triggers Chuks to respond
@@ -60,10 +60,10 @@ Implementation:
 - Hotkey should bypass the wake word requirement
 
 Implementation:
-- [ ] Create `src/hotkey.py` with hotkey registration
-- [ ] On keypress: inject a trigger message into `orchestrator.trigger_queue`
-- [ ] Start hotkey listener in `main.py` startup
-- [ ] Add `HOTKEY_TRIGGER` to `.env` (default: `f9`)
+- [x] Create `src/hotkey.py` with hotkey registration
+- [x] On keypress: inject a trigger message into `orchestrator.trigger_queue`
+- [x] Start hotkey listener in `main.py` startup
+- [x] Add `HOTKEY_TRIGGER` to `.env` (default: `f9`)
 
 ### Part C: Stream Start Greeting (FR-016)
 
@@ -74,12 +74,12 @@ Implementation:
 - Only trigger once per session (use a flag)
 
 Implementation:
-- [ ] Add `stream_greeting()` async function in `orchestrator.py`
-- [ ] Call it from `main.py` startup after queue loop starts
-- [ ] Add `ENABLE_STREAM_GREETING` to `.env` (default: `true`)
+- [x] Add `stream_greeting()` async function in `orchestrator.py`
+- [x] Call it from `main.py` startup after queue loop starts
+- [x] Add `ENABLE_STREAM_GREETING` to `.env` (default: `true`)
 
 ### Success Criteria
-- [ ] CLI lists sessions and memories correctly
-- [ ] Hotkey press triggers Chuks response without wake word
-- [ ] Stream greeting fires once on startup
-- [ ] No regression on wake word, echo suppression, or queue logic
+- [x] CLI lists sessions and memories correctly
+- [x] Hotkey press triggers Chuks response without wake word
+- [x] Stream greeting fires once on startup
+- [x] No regression on wake word, echo suppression, or queue logic

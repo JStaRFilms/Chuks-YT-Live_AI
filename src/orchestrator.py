@@ -232,3 +232,20 @@ async def handle_mic_transcript(text: str) -> None:
         logger.info(f"⏱️ Queued transcript (Size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
     else:
         logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding transcript: {cleaned}")
+
+stream_greeting_fired = False
+
+async def stream_greeting():
+    global stream_greeting_fired
+    if stream_greeting_fired:
+        return
+        
+    enabled = os.getenv("ENABLE_STREAM_GREETING", "true").lower() == "true"
+    if not enabled:
+        return
+        
+    prompt = "The stream just started. Greet the audience with enthusiasm and introduce yourself."
+    if len(trigger_queue) < MAX_QUEUE_SIZE:
+        trigger_queue.append(prompt)
+        logger.info("👋 Queued stream startup greeting.")
+        stream_greeting_fired = True

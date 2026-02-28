@@ -41,8 +41,17 @@ async def startup_event():
     mic_listener.start_listening(handle_mic_transcript, loop)
     
     # Start Background Queue Processor
-    from src.orchestrator import process_queue_loop
+    from src.orchestrator import process_queue_loop, stream_greeting, trigger_queue, MAX_QUEUE_SIZE
+    from src.hotkey import register_hotkey
+
     loop.create_task(process_queue_loop())
+    
+    # Fire stream greeting
+    await stream_greeting()
+    
+    # Register hotkey
+    register_hotkey(trigger_queue, MAX_QUEUE_SIZE)
+
 
 @app.on_event("shutdown")
 async def shutdown_event():

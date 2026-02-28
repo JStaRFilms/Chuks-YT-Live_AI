@@ -92,7 +92,7 @@ async def get_pinned_memories() -> list[dict]:
     try:
         async with pool.acquire() as conn:
             rows = await conn.fetch(
-                "SELECT content, category FROM pinned_memories ORDER BY pinned_at ASC"
+                "SELECT id, content, category FROM pinned_memories ORDER BY pinned_at ASC"
             )
             return [dict(r) for r in rows]
     except Exception as e:
@@ -112,3 +112,52 @@ async def get_messages_for_session(session_id: int) -> list[dict]:
     except Exception as e:
         logger.error(f"Error fetching messages for session {session_id}: {e}")
         return []
+
+async def get_recent_sessions(limit: int = 5) -> list[dict]:
+    if not pool:
+        return []
+    try:
+        async with pool.acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT id, ended_at, summary FROM sessions ORDER BY id DESC LIMIT $1",
+                limit
+            )
+            return [dict(r) for r in rows]
+    except Exception as e:
+        logger.error(f"Error fetching recent sessions: {e}")
+        return []
+
+async def add_pinned_memory(content: str, category: str = "general"):
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute(
+                "INSERT INTO pinned_memories (content, category) VALUES ($1, $2)",
+                content, category
+            )
+    except Exception as e:
+        logger.error(f"Error adding pinned memory: {e}")
+
+async def remove_pinned_memory(memory_id: int):
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            await conn.execute(
+                "DELETE FROM pinned_memories WHERE id = $1",
+                memory_id
+            )
+    except Exception as e:
+        logger.error(f"Error removing pinned memory {memory_id}: {e}")
+
+async def clear_unpinned_memories():
+    if not pool:
+        return
+    try:
+        async with pool.acquire() as conn:
+            # Delete messages first, then sessions
+            await conn.execute("DELETE FROM messages")
+            await conn.execute("DELETE FROM sessions")
+    except Exception as e:
+        logger.error(f"Error clearing unpinned memories: {e}")
