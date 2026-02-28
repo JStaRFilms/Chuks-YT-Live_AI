@@ -41,8 +41,10 @@ async def startup_event():
     mic_listener.start_listening(handle_mic_transcript, loop)
     
     # Start Background Queue Processor
-    from src.orchestrator import process_queue_loop, stream_greeting, trigger_queue, MAX_QUEUE_SIZE
+    from src.orchestrator import process_queue_loop, stream_greeting, trigger_queue, MAX_QUEUE_SIZE, handle_chat_message
     from src.hotkey import register_hotkey
+    from src.youtube_chat import start_chat_poller
+    import os
 
     loop.create_task(process_queue_loop())
     
@@ -51,6 +53,14 @@ async def startup_event():
     
     # Register hotkey
     register_hotkey(trigger_queue, MAX_QUEUE_SIZE)
+
+    # Start YouTube Chat Poller
+    youtube_video_id = os.getenv("YOUTUBE_VIDEO_ID")
+    if youtube_video_id:
+        logger.info(f"YOUTUBE_VIDEO_ID found: {youtube_video_id}. Starting chat poller.")
+        start_chat_poller(youtube_video_id, handle_chat_message)
+    else:
+        logger.info("YOUTUBE_VIDEO_ID not found in environment. YouTube chat integration disabled.")
 
 
 @app.on_event("shutdown")

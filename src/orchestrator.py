@@ -233,6 +233,23 @@ async def handle_mic_transcript(text: str) -> None:
     else:
         logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding transcript: {cleaned}")
 
+async def handle_chat_message(viewer_name: str, text: str) -> None:
+    """Handle parsed commands coming from the YouTube live chat."""
+    cleaned = text.strip()
+    if not cleaned:
+        return
+
+    logger.info(f"💬 Chat command from {viewer_name}: {cleaned}")
+
+    # Format the message so the AI knows it's from chat and who sent it
+    formatted_msg = f"[YouTube Chat] {viewer_name} asks: {cleaned}"
+
+    if len(trigger_queue) < MAX_QUEUE_SIZE:
+        trigger_queue.append(formatted_msg)
+        logger.info(f"⏱️ Queued chat message (Size: {len(trigger_queue)}/{MAX_QUEUE_SIZE})")
+    else:
+        logger.warning(f"⚠️ Queue is full ({MAX_QUEUE_SIZE}). Discarding chat message from {viewer_name}.")
+
 stream_greeting_fired = False
 
 async def stream_greeting():

@@ -51,11 +51,11 @@ YouTube Live Chat ──► Poller (pytchat) ──► Filter (!ai command) ─�
 - **[MODIFY]** `requirements.txt` — Add `pytchat`
 
 ### Implementation Steps
-- [ ] Add `pytchat` to requirements
-- [ ] Create `src/youtube_chat.py` with `ChatPoller` class
-- [ ] Implement message filtering (`!ai` or `!chuks` prefix)
-- [ ] Add `handle_chat_message()` to orchestrator
-- [ ] Wire into `main.py` startup (only if VIDEO_ID is provided)
+- [x] Add `pytchat` to requirements
+- [x] Create `src/youtube_chat.py` with `ChatPoller` class
+- [x] Implement message filtering (`!ai` or `!chuks` prefix)
+- [x] Add `handle_chat_message()` to orchestrator
+- [x] Wire into `main.py` startup (only if VIDEO_ID is provided)
 - [ ] Test with a live or unlisted YouTube stream
 
 ### Chat Command Design
