@@ -88,9 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
         avatarContainer.classList.remove('state-idle', 'state-thinking', 'state-talking');
         avatarContainer.classList.add(`state-${avatarState}`);
 
-        // Update SVG (assume the overlay SVGs are available)
-        avatarImg.src = `/overlay/avatar-${avatarState}.svg`;
-
         // 4. Update Conversation Feed
         if (state.history && state.history.length > 0) {
             // Remove empty state text
